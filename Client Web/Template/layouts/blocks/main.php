@@ -79,6 +79,7 @@ defined('_JEXEC') or die;
                 </div>
                 <a href="https://www.facebook.com/clubdesauvetagetoulousain/" class="btn btn-lg btn-fb btn-social text-white" role="button"><i class="fab fa-facebook-f"></i> Facebook</a>
                 <a href="#" class="btn btn-lg btn-inst btn-social text-white" role="button"><i class="fab fa-instagram" ></i></i> Instagram</a>
+                <a href="https://eos.ffss.fr/" class="btn btn-lg btn-eos btn-social text-white" role="button"><i class="fas fa-ambulance"></i> EOS FFSS</a>
                 <a href="mailto:cstsecretariat@live.fr" class="btn btn-lg btn-env btn-social text-white" role="button"><i class="far fa-envelope"></i> Email</a>
             </div>
             <div class="col-12 col-sm-12 col-md-9 col-lg-9">
