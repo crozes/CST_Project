@@ -1073,3 +1073,7 @@ body{color: #444;line-height:1.9em;margin:0 !important;
     .btn-social:hover{ 
         opacity: 0.8;
     }
+
+    .badge{
+        padding: 6px;
+    }

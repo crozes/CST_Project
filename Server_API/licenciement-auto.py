@@ -30,55 +30,54 @@ def Welcome():
     
 @app.route('/sheetID/<string :post_id>')
 def getSheetInfo(post_id):
-
-# Call the Sheets API
-#1vS3-iv0GOnHQTNMudK9yjl-KYdMQZjb7smJ6CNUa4x8
-SPREADSHEET_ID = 'post_id'
-#NomDeLaFeuille!Range1:RangeTop
-RANGE_NAME = 'Feuil1!A2:J'
-try :
-    result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
-                                             range=RANGE_NAME).execute()
-except Exception as e:
-    print("Erreur")
-    print(e)
-                                                 
-values = result.get('values', [])
-
-resultFin = []
-
-if not values:
-    print('No data found.')
-else:
-    print('Nom, mail:')
+    # Call the Sheets API
+    #1vS3-iv0GOnHQTNMudK9yjl-KYdMQZjb7smJ6CNUa4x8
+    SPREADSHEET_ID = post_id
+    #NomDeLaFeuille!Range1:RangeTop
+    RANGE_NAME = 'Feuil1!A2:J'
     try :
-        for row in values:
-            # Print columns A and E, which correspond to indices 0 and 4.
-            horodateur = row[0]
-            nom = row[1].upper()
-            prenom = row[2].upper()
-            sexe = row[3]
-            mail = row[4]
-            dateNaissance = row[5]
-            lieuNaissance = row[6]
-            adresse = row[7]
-            adresse2 = ''
-            if row[8] != NULL :
-                adresse2 = row[8].upper()
-            codePostal = row[9]
-            ville = row[10]  
-            telephone = row[11]
-            commentaire = ''
-            if row[12] != NULL :
-                commentaire = row[12]
-            activite = 'secourisme'    
-            result = {'Horodateur':horodateur,'Nom':nom,'Prenom':prenom,'Sexe':sexe,'Mail':mail,'DateNaissance':dateNaissance,'LieuNaissance':lieuNaissance,'Adresse':adresse,'Adresse2':adresse2,'CodePostal':codePostal,'Ville':ville,'Telephone':telephone,'Activite':activite}
-            resultFin.append(result)
-            #print('%s, %s' % (row[0], row[4]))
-    except:
-        print("Fin de valeurs")
+        result = service.spreadsheets().values().get(spreadsheetId=SPREADSHEET_ID,
+                                                range=RANGE_NAME).execute()
+    except Exception as e:
+        print("Erreur")
+        print(e)
+                                                    
+    values = result.get('values', [])
 
-    print(resultFin)
+    resultFin = []
+
+    if not values:
+        print('No data found.')
+    else:
+        #print('Nom, mail:')
+        try :
+            for row in values:
+                horodateur = row[0]
+                nom = row[1].upper()
+                prenom = row[2].upper()
+                sexe = row[3]
+                mail = row[4]
+                dateNaissance = row[5]
+                lieuNaissance = row[6]
+                adresse = row[7]
+                adresse2 = ''
+                if row[8] != NULL :
+                    adresse2 = row[8].upper()
+                codePostal = row[9]
+                ville = row[10]  
+                telephone = row[11]
+                commentaire = ''
+                if row[12] != NULL :
+                    commentaire = row[12]
+                activite = 'secourisme'    
+                result = {'Horodateur':horodateur,'Nom':nom,'Prenom':prenom,'Sexe':sexe,'Mail':mail,'DateNaissance':dateNaissance,'LieuNaissance':lieuNaissance,'Adresse':adresse,'Adresse2':adresse2,'CodePostal':codePostal,'Ville':ville,'Telephone':telephone,'Activite':activite}
+                resultFin.append(result)
+                #print('%s, %s' % (row[0], row[4]))
+        except:
+            print("Fin de valeurs")
+
+        print(resultFin)
+        return json.dumps(resultFin)
     
 port = os.getenv('PORT', '5000')
 if __name__ == "__main__":
