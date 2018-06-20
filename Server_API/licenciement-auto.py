@@ -7,7 +7,12 @@ import json
 import os
 
 from flask import Flask
+from flask_cors import CORS
+
 app = Flask(__name__)
+
+#A tester
+cors = CORS(app)
 
 # Setup the Sheets API
 SCOPES = 'https://www.googleapis.com/auth/spreadsheets.readonly'
@@ -23,6 +28,7 @@ def Welcome():
     return "Hello World !"
     
 @app.route('/sheetID/<post_id>')
+@crossdomain(origin='*')
 def getSheetInfo(post_id):
     # Call the Sheets API
     #1vS3-iv0GOnHQTNMudK9yjl-KYdMQZjb7smJ6CNUa4x8
