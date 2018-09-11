@@ -19,7 +19,7 @@
 					<div class="form-group">
 				 		<label for="lienGoogle">Lien du Google-Sheet</label>
 						<input type="text" class="form-control" id="lienGoogle" aria-describedby="lienGoogle" placeholder="Entrer Lien Google-Sheet">
-						<small id="emailHelp" class="form-text text-muted">Exemple : https://docs.google.com/spreadsheets/d/19WRyH21ndIw2z0F7isKia7sHtEnci7o75cm13APdqjY/edit#gid=1369281937</small>
+						<small id="emailHelp" class="form-text text-muted">Exemple : https://docs.google.com/spreadsheets/d/1ApILNRAgpESuTe-SkWKJzF1yTOXzcK4CaUVyy7gTElM/edit#gid=1328458857</small>
 					</div>
 					<button type="button" id="btnGenerate" class="btn btn-primary">Commencer</button>
 				</form>	
@@ -27,12 +27,12 @@
 		</div>
 	</div>
 	<hr/>
-	<div class="container" id="bottom"><!-- class hidden : d-none -->
+	<div class="container mb-4" id="bottom"><!-- class hidden : d-none -->
 		<div id="alert"></div>
 		<div class="alert alert-info" role="alert">Verifier <strong>Nationnalié</strong>, <strong>Departement</strong>, <strong>Date de Naissance</strong> dans le bon format</div>
 		<div class="row">
 			<div class="col-md-12">
-				<form id="newLicence" name="newLicence" action="http://www.ffss.fr/web/348-nouvelle-licence.php" method="post" target="_blank">
+				<form id="newLicence" name="newLicence" action="https://www.ffss.fr/web/348-nouvelle-licence.php" method="post" target="_blank" accept-charset="ISO-8859-1">
 					<div class="row">
 						<div class="col-md-4">
 							<div class="form-group">
@@ -49,7 +49,11 @@
 						<div class="col-md-4">
 							<div class="form-group">
 						 		<label for="sexe">Sexe</label>
-								<select name="sexe" class="form-control"><option value="" selected="selected">---</option><option value="Femme">Femme</option><option value="Homme">Homme</option></select>
+								<select id="sexe" name="sexe" class="form-control">
+									<option value="">---</option>
+									<option value="Homme">Homme</option>
+									<option value="Femme">Femme</option>
+								</select>
 							</div>
 						</div>
 						<div class="col-md-3">
@@ -126,36 +130,28 @@
 						</div>
 						<div class="col-md-4">
 							Activité principale :
-							<div class="form-group">
-								<div class="form-check">
-									<input class="form-check-input" id="activiteSecourisme" type="checkbox" name="activite[]" value="1">
-									<label class="form-check-label" for="activiteSecourisme">Secourisme</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" id="activiteSauvetage" type="checkbox" name="activite[]" value="2">
-									<label class="form-check-label" for="activiteSauvetage">Sauvetage</label>
-								</div>
+							<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								<label class="btn btn-secondary active">
+									<input type="radio" name="activite[]" value="1" id="activiteSecourisme" autocomplete="off" checked>Secourisme
+								</label>
+								<label class="btn btn-secondary">
+									<input type="radio" name="activite[]" value="2" id="activiteSauvetage" autocomplete="off">Sauvetage
+								</label>
 							</div>
 						</div>
 						<div class="col-md-4">
 							Licence :
-							<div class="form-group">
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="type_licence" id="type_licenceNN" value="NN" checked="checked">
-									<label class="form-check-label" for="type_licenceNN">
-										Normal
-									</label>
-								</div>
-								<div class="form-check">
-									<input class="form-check-input" type="radio" name="type_licence" id="type_licenceNP" value="NP">
-									<label class="form-check-label" for="type_licenceNP">
-										Promo
-									</label>
-								</div>
+							<div class="btn-group btn-group-toggle" data-toggle="buttons">
+								<label class="btn btn-secondary active">
+									<input type="radio" name="type_licence" value="NN" id="type_licenceNN" autocomplete="off" checked>Normal
+								</label>
+								<label class="btn btn-secondary">
+									<input type="radio" name="type_licence" value="NP" id="type_licenceNP" autocomplete="off">Promo
+								</label>
 							</div>
 						</div>
 					</div>
-					<button type="button" class="btn btn-success">Générer</button>
+					<button id="validButton" type="submit" class="btn btn-success btn-lg mt-4">Valider</button>
 				</form>	
 			</div>
 		</div>
@@ -173,9 +169,36 @@
 	}
 
 	function completeForm(effectifs){
-		for (var licence in effectifs) {
-			alert(licence);
+		for(var i = 0; i<effectifs.length ;i++)
+		{
+			completeFormWithElement(effectifs[i])
 		}
+	}
+
+	function completeFormWithElement(array){
+		$('#nom').val(array['Nom']);
+		$('#prenom').val(array['Prenom']);
+		if(array['Sexe'] == 'Un homme'){
+			$('#sexe').val('Homme');
+			//$('#sexe option[value="Homme"]').attr('selected', true);
+		}
+		else if(array['Sexe'] == 'Une Femme'){
+			$('#sexe').val('Femme');
+			//$('#sexe option[value="Femme"]').attr('selected', true);
+		}
+		$('#dateNaissance').val(array['DateNaissance']);
+		$('#lieuNaissance').val(array['LieuNaissance']);
+		$('#adresse').val(array['Adresse']);
+		$('#adresse_suite').val(array['Adresse2']);
+		$('#code_postal').val(array['CodePostal']);
+		$('#ville').val(array['Ville']);
+		$('#telephone').val(array['Telephone']);
+		$('#portable').val(array['Portable']);
+		$('#email').val(array['Mail']);
+
+		$( "#newLicence" ).submit();
+
+		//$('#validButton').click();
 	}
 
 	$('#btnGenerate').click(function(event) {
@@ -183,9 +206,9 @@
 		var idGoogleSheet = lien.split('/').slice(-2)[0];
 		var jsonEffectifs;
 		// Definir le lien
-		var url = "http://localhost:5000/sheetID/"+idGoogleSheet;
+		var url = "http://78.249.92.32:5000/sheetID/"+idGoogleSheet;
 		$.get(url, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
+            alert("Status: " + status);
            	jsonEffectifs = data;
         })
 		.done(function() {
