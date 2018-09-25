@@ -151,7 +151,7 @@
 							</div>
 						</div>
 					</div>
-					<button id="validButton" type="submit" class="btn btn-success btn-lg mt-4">Valider</button>
+					<button id="validButton" type="submit" class="btn btn-success btn-lg mt-4" onclick="skip()">Valider</button>
 				</form>	
 			</div>
 		</div>
@@ -161,18 +161,17 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script type="text/javascript">
-	function generateAlerte(text,type){
-		if (!$('#alert').is(':empty')){
-		 	$('#alert').text('');
-		}
-			$('#alert').text('<div class="alert alert-'+type+'" role="alert">'+text+'</div>');
+	var jsonEffectifs;
+	var cpt = 0;
+
+	function completeForm(){
+		console.log("completeForm function cpt : "+ cpt);
+		completeFormWithElement(jsonEffectifs[cpt]);
 	}
 
-	function completeForm(effectifs){
-		for(var i = 0; i<effectifs.length ;i++)
-		{
-			completeFormWithElement(effectifs[i])
-		}
+	function skip(){
+		console.log("Skip function cpt : "+ cpt);
+		completeFormWithElement(jsonEffectifs[cpt]);
 	}
 
 	function completeFormWithElement(array){
@@ -180,11 +179,9 @@
 		$('#prenom').val(array['Prenom']);
 		if(array['Sexe'] == 'Un homme'){
 			$('#sexe').val('Homme');
-			//$('#sexe option[value="Homme"]').attr('selected', true);
 		}
-		else if(array['Sexe'] == 'Une Femme'){
+		else if(array['Sexe'] == 'Une femme'){
 			$('#sexe').val('Femme');
-			//$('#sexe option[value="Femme"]').attr('selected', true);
 		}
 		$('#dateNaissance').val(array['DateNaissance']);
 		$('#lieuNaissance').val(array['LieuNaissance']);
@@ -195,16 +192,11 @@
 		$('#telephone').val(array['Telephone']);
 		$('#portable').val(array['Portable']);
 		$('#email').val(array['Mail']);
-
-		$( "#newLicence" ).submit();
-
-		//$('#validButton').click();
 	}
 
 	$('#btnGenerate').click(function(event) {
 		var lien = $('#lienGoogle').val();
 		var idGoogleSheet = lien.split('/').slice(-2)[0];
-		var jsonEffectifs;
 		// Definir le lien
 		var url = "http://78.249.92.32:5000/sheetID/"+idGoogleSheet;
 		$.get(url, function(data, status){
@@ -212,7 +204,7 @@
            	jsonEffectifs = data;
         })
 		.done(function() {
-			completeForm(jsonEffectifs);
+			completeForm();
 		})
 		.fail(function() {
 			alert( "error" );
