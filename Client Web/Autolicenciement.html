@@ -15,6 +15,10 @@
 	<div class="container" id="top">
 		<div class="row">
 			<div class="auto">
+				<form action="https://www.ffss.fr/web/ffss/9-espace-reserve.php" method="post" target="_blank" accept-charset="ISO-8859-1">
+					<input type="text" class="form-control" name="2165ed707fde66b034ecac27fa5d4a3e" value="CST" style="visibility: hidden;">
+					<button type="submit" class="btn btn-success" style="margin-top : -60px;">Connection FFSS</button>
+				</form>
 				<form>
 					<div class="form-group">
 				 		<label for="lienGoogle">Lien du Google-Sheet</label>
@@ -22,14 +26,14 @@
 						<small id="emailHelp" class="form-text text-muted">Exemple : https://docs.google.com/spreadsheets/d/1ApILNRAgpESuTe-SkWKJzF1yTOXzcK4CaUVyy7gTElM/edit#gid=1328458857</small>
 					</div>
 					<button type="button" id="btnGenerate" class="btn btn-primary">Commencer</button>
-				</form>	
+				</form>
 			</div>
 		</div>
 	</div>
 	<hr/>
-	<div class="container mb-4" id="bottom"><!-- class hidden : d-none -->
-		<div id="alert"></div>
-		<div class="alert alert-info" role="alert">Verifier <strong>Nationnalié</strong>, <strong>Departement</strong>, <strong>Date de Naissance</strong> dans le bon format</div>
+	<div class="container mb-4 d-none" id="bottom">
+		<div class="alert alert-info" role="alert"><strong id="nbrLicencier"></strong> Personnes à licencier</div>
+		<div class="alert alert-danger" role="alert">Verifier <strong>Nationnalié</strong>, <strong>Departement</strong>, <strong>Date de Naissance</strong> dans le bon format (<strong>JJ/MM/AAAA</strong>)</div>
 		<div class="row">
 			<div class="col-md-12">
 				<form id="newLicence" name="newLicence" action="https://www.ffss.fr/web/348-nouvelle-licence.php" method="post" target="_blank" accept-charset="ISO-8859-1">
@@ -151,7 +155,9 @@
 							</div>
 						</div>
 					</div>
-					<button id="validButton" type="submit" class="btn btn-success btn-lg mt-4" onclick="skip()">Valider</button>
+					<button id="validButton" type="submit" class="btn btn-success btn-lg mt-4">Licencier</button>
+					<button id="prec" type="button" class="btn btn-primary btn-lg mt-4">Precedent</button>
+					<button id="skip" type="button" class="btn btn-primary btn-lg mt-4">Suivant</button>
 				</form>	
 			</div>
 		</div>
@@ -164,15 +170,59 @@
 	var jsonEffectifs;
 	var cpt = 0;
 
+	$("#prec").prop("disabled",true);
+
+	function verificationButton(){
+		if(cpt <= 0){
+			$("#prec").prop("disabled",true);
+		}
+		else if(cpt >= jsonEffectifs.length-1){
+			$("#skip").prop("disabled",true);
+		}
+		else if(jsonEffectifs.length-1 == 0){
+			$("#skip").prop("disabled",true);
+		}
+		else{
+			$("#prec").prop("disabled",false);
+			$("#skip").prop("disabled",false);
+		}
+	}
+
 	function completeForm(){
-		console.log("completeForm function cpt : "+ cpt);
-		completeFormWithElement(jsonEffectifs[cpt]);
+		if(jsonEffectifs.length <= 0){
+			alert("Aucune personne à licencier dans le tableur");
+			$("#bottom").addClass("d-none");
+		}
+		else{
+			console.log("completeForm function cpt : "+ cpt);
+			completeFormWithElement(jsonEffectifs[cpt]);
+			verificationButton();
+		}
 	}
 
 	function skip(){
+		if(cpt < jsonEffectifs.length-1)
+			cpt ++;
 		console.log("Skip function cpt : "+ cpt);
 		completeFormWithElement(jsonEffectifs[cpt]);
+		verificationButton();
 	}
+
+	function prec(){
+		if(cpt > 0)
+			cpt --;
+		console.log("Skip function cpt : "+ cpt);
+		completeFormWithElement(jsonEffectifs[cpt]);
+		verificationButton();
+	}
+
+	$("#skip").click(function(){
+		skip();
+	});
+
+	$("#prec").click(function(){
+		prec();
+	});
 
 	function completeFormWithElement(array){
 		$('#nom').val(array['Nom']);
@@ -200,14 +250,16 @@
 		// Definir le lien
 		var url = "http://78.249.92.32:5000/sheetID/"+idGoogleSheet;
 		$.get(url, function(data, status){
-            alert("Status: " + status);
+            //alert("Status: " + status);
            	jsonEffectifs = data;
         })
 		.done(function() {
+			$("#bottom").removeClass("d-none");
+			$("#nbrLicencier").text(jsonEffectifs.length);
 			completeForm();
 		})
 		.fail(function() {
-			alert( "error" );
+			alert( "Probleme de connection au Serveur" );
 		})
 	});
 </script>
